@@ -51,7 +51,44 @@ namespace ReportingTool
                 MessageBox.Show(ex.Message);
             }
         }
-
+        public static void AlarmReport()
+        {
+            try
+            {
+                ReportDocument myReport = new ReportDocument();
+                string reportPath = (Application.StartupPath + @"\Reports\AlarmReport.rpt");
+                myReport.Load(reportPath);
+                string filepath = getFilePath(); ;
+                if (filepath != string.Empty)
+                {
+                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
+                    MD5Check.GetMD5HashCode(filepath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public static void BatchReport()
+        {
+            try
+            {
+                ReportDocument myReport = new ReportDocument();
+                string reportPath = (Application.StartupPath + @"\Reports\BatchReport.rpt");
+                myReport.Load(reportPath);
+                string filepath = getFilePath(); ;
+                if (filepath != string.Empty)
+                {
+                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
+                    MD5Check.GetMD5HashCode(filepath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
     }
 }

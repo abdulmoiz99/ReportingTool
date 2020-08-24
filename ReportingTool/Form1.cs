@@ -40,6 +40,11 @@ namespace ReportingTool
         {
             GenerateReports.LoginReport();
         }
-       
+
+        private void btn_AlarmReport_Click(object sender, EventArgs e)
+        {
+            GenerateReports.AlarmReport();
+
+        }
     }
 }
