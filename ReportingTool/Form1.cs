@@ -38,7 +38,7 @@ namespace ReportingTool
         }
         private void btn_LoginReport_Click(object sender, EventArgs e)
         {
-            GenerateReports.LoginReport(1);
+            GenerateReports.LoginReport();
         }
        
     }

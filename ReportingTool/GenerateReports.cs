@@ -32,27 +32,16 @@ namespace ReportingTool
             return filePath;
         }
       
-        public static void LoginReport(int ID)
+        public static void LoginReport()
         {
             try
             {
-                //if (SQL.Con.State == ConnectionState.Open)
-                //{
-                //    SQL.Con.Close();
-                //}
-                //SQL.Con.Open();
-                // Cursor = Cursors.WaitCursor;
                 ReportDocument myReport = new ReportDocument();
-                string reportPath = (Application.StartupPath + @"\LoginReport.rpt");
-                //var ds = new DataSet();
-                //String SqlQuery = "select * from TvuRptDetails where ID  = " + ID + "";
-                //var adapter = new SqlDataAdapter(SqlQuery, SQL.Con);
-                // adapter.Fill(ds, "TvuRptDetails");
+                string reportPath = (Application.StartupPath + @"\Reports\LoginReport.rpt");
                 myReport.Load(reportPath);
                 string filepath = getFilePath(); ;
                 if (filepath!=string.Empty)
                 {  
-                    // myReport.SetDataSource(ds);
                     myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
                     MD5Check.GetMD5HashCode(filepath);
                 }
@@ -60,11 +49,6 @@ namespace ReportingTool
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                // SQL.Con.Close();
-             //   Cursor = Cursors.Default;
             }
         }
 
