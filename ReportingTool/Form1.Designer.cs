@@ -31,9 +31,9 @@
             this.btn_LoginReport = new System.Windows.Forms.Button();
             this.btn_MD5Check = new System.Windows.Forms.Button();
             this.btn_AlarmReport = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.bnt_BatchReport = new System.Windows.Forms.Button();
+            this.btn_OperationReport = new System.Windows.Forms.Button();
+            this.bnt_ParameterReport = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btn_LoginReport
@@ -69,34 +69,38 @@
             this.btn_AlarmReport.UseVisualStyleBackColor = true;
             this.btn_AlarmReport.Click += new System.EventHandler(this.btn_AlarmReport_Click);
             // 
-            // button2
+            // bnt_BatchReport
             // 
-            this.button2.Location = new System.Drawing.Point(32, 116);
-            this.button2.Margin = new System.Windows.Forms.Padding(4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(350, 35);
-            this.button2.TabIndex = 3;
-            this.button2.UseVisualStyleBackColor = true;
+            this.bnt_BatchReport.Location = new System.Drawing.Point(32, 116);
+            this.bnt_BatchReport.Margin = new System.Windows.Forms.Padding(4);
+            this.bnt_BatchReport.Name = "bnt_BatchReport";
+            this.bnt_BatchReport.Size = new System.Drawing.Size(350, 35);
+            this.bnt_BatchReport.TabIndex = 3;
+            this.bnt_BatchReport.Text = "Batch Report";
+            this.bnt_BatchReport.UseVisualStyleBackColor = true;
+            this.bnt_BatchReport.Click += new System.EventHandler(this.bnt_BatchReport_Click);
             // 
-            // button3
+            // btn_OperationReport
             // 
-            this.button3.Location = new System.Drawing.Point(32, 159);
-            this.button3.Margin = new System.Windows.Forms.Padding(4);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(350, 35);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "Login Report";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btn_OperationReport.Location = new System.Drawing.Point(32, 159);
+            this.btn_OperationReport.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_OperationReport.Name = "btn_OperationReport";
+            this.btn_OperationReport.Size = new System.Drawing.Size(350, 35);
+            this.btn_OperationReport.TabIndex = 4;
+            this.btn_OperationReport.Text = "Operation Report";
+            this.btn_OperationReport.UseVisualStyleBackColor = true;
+            this.btn_OperationReport.Click += new System.EventHandler(this.btn_OperationReport_Click);
             // 
-            // button4
+            // bnt_ParameterReport
             // 
-            this.button4.Location = new System.Drawing.Point(32, 202);
-            this.button4.Margin = new System.Windows.Forms.Padding(4);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(350, 35);
-            this.button4.TabIndex = 5;
-            this.button4.Text = "Login Report";
-            this.button4.UseVisualStyleBackColor = true;
+            this.bnt_ParameterReport.Location = new System.Drawing.Point(32, 202);
+            this.bnt_ParameterReport.Margin = new System.Windows.Forms.Padding(4);
+            this.bnt_ParameterReport.Name = "bnt_ParameterReport";
+            this.bnt_ParameterReport.Size = new System.Drawing.Size(350, 35);
+            this.bnt_ParameterReport.TabIndex = 5;
+            this.bnt_ParameterReport.Text = "Parameter Report";
+            this.bnt_ParameterReport.UseVisualStyleBackColor = true;
+            this.bnt_ParameterReport.Click += new System.EventHandler(this.bnt_ParameterReport_Click);
             // 
             // Form1
             // 
@@ -104,9 +108,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(401, 330);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.bnt_ParameterReport);
+            this.Controls.Add(this.btn_OperationReport);
+            this.Controls.Add(this.bnt_BatchReport);
             this.Controls.Add(this.btn_AlarmReport);
             this.Controls.Add(this.btn_MD5Check);
             this.Controls.Add(this.btn_LoginReport);
@@ -124,9 +128,9 @@
         private System.Windows.Forms.Button btn_LoginReport;
         private System.Windows.Forms.Button btn_MD5Check;
         private System.Windows.Forms.Button btn_AlarmReport;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button bnt_BatchReport;
+        private System.Windows.Forms.Button btn_OperationReport;
+        private System.Windows.Forms.Button bnt_ParameterReport;
     }
 }
 

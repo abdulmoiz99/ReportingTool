@@ -89,6 +89,44 @@ namespace ReportingTool
                 MessageBox.Show(ex.Message);
             }
         }
+        public static void OperationReport()
+        {
+            try
+            {
+                ReportDocument myReport = new ReportDocument();
+                string reportPath = (Application.StartupPath + @"\Reports\OperationReport.rpt");
+                myReport.Load(reportPath);
+                string filepath = getFilePath(); ;
+                if (filepath != string.Empty)
+                {
+                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
+                    MD5Check.GetMD5HashCode(filepath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public static void ParameterReport()
+        {
+            try
+            {
+                ReportDocument myReport = new ReportDocument();
+                string reportPath = (Application.StartupPath + @"\Reports\ParameterReport.rpt");
+                myReport.Load(reportPath);
+                string filepath = getFilePath(); ;
+                if (filepath != string.Empty)
+                {
+                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
+                    MD5Check.GetMD5HashCode(filepath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
     }
 }

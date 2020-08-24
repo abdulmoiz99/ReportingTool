@@ -34,7 +34,6 @@ namespace ReportingTool
                 filePath = openDlg.FileName;
                 MD5Check.CheckHashCode(filePath);
             }
-       
         }
         private void btn_LoginReport_Click(object sender, EventArgs e)
         {
@@ -45,6 +44,22 @@ namespace ReportingTool
         {
             GenerateReports.AlarmReport();
 
+        }
+        //Batch Report Still Need Some Major Fixes
+        private void bnt_BatchReport_Click(object sender, EventArgs e)
+        {
+            GenerateReports.BatchReport();
+
+        }
+
+        private void btn_OperationReport_Click(object sender, EventArgs e)
+        {
+            GenerateReports.OperationReport();
+        }
+        //Spacing Issue In Parameter Report
+        private void bnt_ParameterReport_Click(object sender, EventArgs e)
+        {
+            GenerateReports.ParameterReport();
         }
     }
 }
