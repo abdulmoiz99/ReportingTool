@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btn_LoginReport = new System.Windows.Forms.Button();
             this.btn_MD5Check = new System.Windows.Forms.Button();
             this.btn_AlarmReport = new System.Windows.Forms.Button();
             this.bnt_BatchReport = new System.Windows.Forms.Button();
             this.btn_OperationReport = new System.Windows.Forms.Button();
             this.bnt_ParameterReport = new System.Windows.Forms.Button();
+            this.mynotifyicon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // btn_LoginReport
@@ -102,10 +104,15 @@
             this.bnt_ParameterReport.UseVisualStyleBackColor = true;
             this.bnt_ParameterReport.Click += new System.EventHandler(this.bnt_ParameterReport_Click);
             // 
+            // mynotifyicon
+            // 
+            this.mynotifyicon.Text = "notifyIcon1";
+            this.mynotifyicon.Visible = true;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(401, 330);
             this.Controls.Add(this.bnt_ParameterReport);
@@ -119,6 +126,7 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ReportingTool";
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.ResumeLayout(false);
 
         }
@@ -131,6 +139,7 @@
         private System.Windows.Forms.Button bnt_BatchReport;
         private System.Windows.Forms.Button btn_OperationReport;
         private System.Windows.Forms.Button bnt_ParameterReport;
+        private System.Windows.Forms.NotifyIcon mynotifyicon;
     }
 }
 

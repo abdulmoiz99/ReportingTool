@@ -1,0 +1,14 @@
+We are developing the SCADA system by Indusoft, and we need export the PDF report and do MD5 checksum for checking if the file is modified or not.
+We need the C or VB script code can be DLL file which I can import or include into the SCADA software. The sample of the PDF report are listed in the attached file, it is the format, but inside document will be changed. In summary, we need the program by Visual Basic Script. 1. Getting the data from MySQL server -> Put the data into the Report Format -> Export to excel or PDF file(User can select by themselves) -> Record the MD5 checksum hash code 2. Select the report file -> Select the report Date and time -> Get the MD5 checksum hash code from database -> Compare the hash code of imported report file -> If the same, say Yes. If not, say No.
+
+Can you make the program for us?
+
+
+
+
+Please refer to the attached report format, I have put all the items I can figure out. The template would be the same, but the table name may be changed.
+
+After discussing with our SCADA engineer, he suggest to make the report printing program into a background program, and we use one table for data exchange and hand shake using.
+
+We will update the data into one table include all information, and your program found the data has been changed, then your program perform the SQL and make the report.
+

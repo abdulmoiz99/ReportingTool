@@ -1,15 +1,4 @@
-﻿using CrystalDecisions.CrystalReports.Engine;
-using CrystalDecisions.Shared;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
 
 namespace ReportingTool
@@ -20,7 +9,6 @@ namespace ReportingTool
         {
             InitializeComponent();
         }
-     
         private void btn_MD5Check_Click(object sender, EventArgs e)
         {
             var openDlg = new OpenFileDialog();
@@ -39,19 +27,15 @@ namespace ReportingTool
         {
             GenerateReports.LoginReport();
         }
-
         private void btn_AlarmReport_Click(object sender, EventArgs e)
         {
             GenerateReports.AlarmReport();
-
         }
         //Batch Report Still Need Some Major Fixes
         private void bnt_BatchReport_Click(object sender, EventArgs e)
         {
             GenerateReports.BatchReport();
-
         }
-
         private void btn_OperationReport_Click(object sender, EventArgs e)
         {
             GenerateReports.OperationReport();
@@ -60,6 +44,21 @@ namespace ReportingTool
         private void bnt_ParameterReport_Click(object sender, EventArgs e)
         {
             GenerateReports.ParameterReport();
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == this.WindowState)
+            {
+                mynotifyicon.Visible = true;
+               // mynotifyicon.ShowBalloonTip(500);
+                this.Hide();
+            }
+
+            else if (FormWindowState.Normal == this.WindowState)
+            {
+                mynotifyicon.Visible = false;
+            }
         }
     }
 }
