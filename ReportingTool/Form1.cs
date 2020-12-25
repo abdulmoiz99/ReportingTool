@@ -25,11 +25,11 @@ namespace ReportingTool
         }
         private void btn_LoginReport_Click(object sender, EventArgs e)
         {
-            GenerateReports.LoginReport();
+           // GenerateReports.LoginReport();
         }
         private void btn_AlarmReport_Click(object sender, EventArgs e)
         {
-            GenerateReports.AlarmReport();
+            //GenerateReports.AlarmReport();
         }
         //Batch Report Still Need Some Major Fixes
         private void bnt_BatchReport_Click(object sender, EventArgs e)

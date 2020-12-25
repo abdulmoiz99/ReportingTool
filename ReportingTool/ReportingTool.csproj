@@ -79,12 +79,23 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="frm_GenerateReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_GenerateReport.Designer.cs">
+      <DependentUpon>frm_GenerateReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="GenerateReports.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="MD5Check.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQL.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_GenerateReport.resx">
+      <DependentUpon>frm_GenerateReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
