@@ -38,12 +38,11 @@ namespace ReportingTool
         }
         private void btn_OperationReport_Click(object sender, EventArgs e)
         {
-            GenerateReports.OperationReport();
+            //GenerateReports.OperationReport();
         }
         //Spacing Issue In Parameter Report
         private void bnt_ParameterReport_Click(object sender, EventArgs e)
         {
-            GenerateReports.ParameterReport();
         }
 
         private void Form1_Resize(object sender, EventArgs e)

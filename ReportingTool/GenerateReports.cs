@@ -14,7 +14,7 @@ namespace ReportingTool
     {
         private static readonly Random random = new Random();
         //private static SqlConnection con = new SqlConnection(@"Data Source=.\ABDUL;Initial Catalog=ReportingToolDummyDatabase;Integrated Security=True;Pooling=False");// ReadCS().ToString()); 
-        public static string SaveReportPath = @"D:\Abdul";                                                                                                                                                               // private static SqlConnection con = new SqlConnection(@"Data Source=AVF-108_ADMIN\SQLEXPRESS;Initial Catalog=ReportingTool;Integrated Security=True;Pooling=False");// ReadCS().ToString()); 
+        public static string SaveReportPath = @"D:\Pika";                                                                                                                                                               // private static SqlConnection con = new SqlConnection(@"Data Source=AVF-108_ADMIN\SQLEXPRESS;Initial Catalog=ReportingTool;Integrated Security=True;Pooling=False");// ReadCS().ToString()); 
 
         private static string getFilePath()
         {
@@ -44,7 +44,7 @@ namespace ReportingTool
             int ID = 0;
             if (int.TryParse(SQL.ScalarQuery("select Top 1 SN from Hand_Shake where Generation_Code = 0"), out ID))
             {
-                string reportID = SQL.ScalarQuery("select IsNull(Report_Type,0) as ReprtType from Hand_Shake where SN = " + ID + "");
+                string reportID = SQL.ScalarQuery("select IsNull(Report_Type,0) as ReportType from Hand_Shake where SN = " + ID + "");
 
                 switch (reportID)
                 {
@@ -58,10 +58,10 @@ namespace ReportingTool
                         BatchReport();
                         break;
                     case "4":
-                        OperationReport();
+                        OperationReport(ID);
                         break;
                     case "5":
-                        ParameterReport();
+                        ParameterReport(ID);
                         break;
                     default:
                         InvalidReport(ID);
@@ -120,13 +120,21 @@ namespace ReportingTool
 
             try
             {
+                string SqlQuery;
 
-
+                if (GetSearchCondition(ID) == "1") // for time
+                {
+                    SqlQuery = "select * from Alarm where StartTime between (select Start_Time from hand_shake where SN =  " + ID + ") and (select End_Time from hand_shake where SN =  " + ID + ")";
+                }
+                else // for batch no
+                {
+                    SqlQuery = "select * from Alarm where Batch_No = (select batch_No from Hand_Shake where SN = " + ID + ")";
+                }
                 if (SQL.Con.State != ConnectionState.Open) SQL.Con.Open();
                 ReportDocument myReport = new ReportDocument();
                 string reportPath = (Application.StartupPath + @"\Reports\AlarmReport.rpt");
                 var ds = new DataSet();
-                String SqlQuery = "select * from Alarm where StartTime between (select Start_Time from hand_shake where SN =  " + ID + ") and (select End_Time from hand_shake where SN =  " + ID + ")";
+
                 var adapter = new SqlDataAdapter(SqlQuery, SQL.Con);
                 adapter.Fill(ds, "Alarm");
                 myReport.Load(reportPath);
@@ -153,6 +161,124 @@ namespace ReportingTool
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        public static void OperationReport(int ID)
+        {
+            SQL.NonScalarQuery("update Hand_Shake set Generation_Code = 1 , Feedback_Code = 1 where sn  = " + ID + "");
+
+            try
+            {
+                string SqlQuery;
+
+                if (GetSearchCondition(ID) == "1") // for time
+                {
+                    SqlQuery = "select * from Operation where Time between (select Start_Time from hand_shake where SN =  " + ID + ") and (select End_Time from hand_shake where SN =  " + ID + ")";
+                }
+                else // for batch no
+                {
+                    SqlQuery = "select * from Operation where Batch_No = (select batch_No from Hand_Shake where SN = " + ID + ")";
+                }
+                if (SQL.Con.State != ConnectionState.Open) SQL.Con.Open();
+                ReportDocument myReport = new ReportDocument();
+                string reportPath = (Application.StartupPath + @"\Reports\OperationReport.rpt");
+                var ds = new DataSet();
+
+                var adapter = new SqlDataAdapter(SqlQuery, SQL.Con);
+                adapter.Fill(ds, "Operation");
+                myReport.Load(reportPath);
+                myReport.SetDataSource(ds);
+                myReport.SetParameterValue("username", GetUsername(ID));
+                myReport.SetParameterValue("ReportSN", GetReportSN(ID, "Operation"));
+                myReport.SetParameterValue("startTime", GetStartTime(ID));
+                myReport.SetParameterValue("endTime", GetEndTime(ID));
+                myReport.SetParameterValue("operator", GetOperator(ID));
+                myReport.SetParameterValue("supervisor", GetSupervisor(ID));
+                myReport.SetParameterValue("Title", GetTittle(ID));
+
+
+                string fileName = GetFileName("OperationReport");
+                string filepath = SaveReportPath + fileName;
+                if (filepath != string.Empty)
+                {
+                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
+                    UpdateMD5Code(ID, MD5Check.GetMD5HashCode(filepath));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public static void ParameterReport(int ID)
+        {
+            SQL.NonScalarQuery("update Hand_Shake set Generation_Code = 1 , Feedback_Code = 1 where sn  = " + ID + "");
+
+            try
+            {
+
+
+                if (SQL.Con.State != ConnectionState.Open) SQL.Con.Open();
+                ReportDocument myReport = new ReportDocument();
+                string reportPath = (Application.StartupPath + @"\Reports\ParameterReport.rpt");
+                var ds = new DataSet();
+                String SqlQuery = GetParamterQuery(ID);
+                var adapter = new SqlDataAdapter(SqlQuery, SQL.Con);
+                adapter.Fill(ds, "Parameter");
+                myReport.Load(reportPath);
+                myReport.SetDataSource(ds);
+                myReport.SetParameterValue("username", GetUsername(ID));
+                myReport.SetParameterValue("ReportSN", GetReportSN(ID, "Parameter"));
+                myReport.SetParameterValue("startTime", GetStartTime(ID));
+                myReport.SetParameterValue("endTime", GetEndTime(ID));
+                myReport.SetParameterValue("operator", GetOperator(ID));
+                myReport.SetParameterValue("supervisor", GetSupervisor(ID));
+                myReport.SetParameterValue("Title", GetTittle(ID));
+                myReport.SetParameterValue("RecipeStart", GetRecipeStart(ID));
+                myReport.SetParameterValue("RecipeEnd", GetRecipeEnd(ID));
+
+
+                string fileName = GetFileName("ParameterReport");// @"\Login_" + DateTime.Now.ToFileTime() + ".pdf";
+                string filepath = SaveReportPath + fileName;// @"\LoginReport.pdf";
+                if (filepath != string.Empty)
+                {
+                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
+                    UpdateMD5Code(ID, MD5Check.GetMD5HashCode(filepath));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public static string GetParamterQuery(int ID)
+        {
+            string recepieStart =  SQL.ScalarQuery("select IsNull(Recipe_No_Start,0) from Hand_Shake where SN  = " + ID + "");
+            string recepieEnd = SQL.ScalarQuery("select IsNull(Recipe_No_End,0) from Hand_Shake where SN  = " + ID + "");
+            if (recepieStart != "0" && recepieEnd == "0")
+            {
+                return "select * from Parameter where Recepie_No = " + recepieStart + "";
+            }
+            if (recepieStart == "0" && recepieEnd != "0")
+            {
+                return "select * from Parameter where Recepie_No = " + recepieEnd + "";
+
+            }
+            if (recepieStart != "0" && recepieEnd != "0")
+            {
+                return "select * from Parameter WHERE Recepie_No BETWEEN " + recepieStart + " AND " + recepieEnd + ";";
+            }
+            return "select * Parameter where Recepie_No  = -1";
+
+        }
+        public static string GetRecipeStart(int ID)
+        {
+            return SQL.ScalarQuery("select IsNull(Recipe_No_Start,'-') from Hand_Shake where SN  = " + ID + "");
+        }
+        public static string GetRecipeEnd(int ID)
+        {
+            return SQL.ScalarQuery("select IsNull(Recipe_No_End,'-') from Hand_Shake where SN  = " + ID + "");
         }
         public static void UpdateMD5Code(int ID, string HASHCODE)
         {
@@ -203,7 +329,10 @@ namespace ReportingTool
             }
             return fileName;
         }
-
+        private static string GetSearchCondition(int ID)
+        {
+            return SQL.ScalarQuery("select ISNull(search_condition,1) from Hand_Shake where SN = " + ID + "");
+        }
         public static void BatchReport()
         {
             try
@@ -223,44 +352,8 @@ namespace ReportingTool
                 MessageBox.Show(ex.Message);
             }
         }
-        public static void OperationReport()
-        {
-            try
-            {
-                ReportDocument myReport = new ReportDocument();
-                string reportPath = (Application.StartupPath + @"\Reports\OperationReport.rpt");
-                myReport.Load(reportPath);
-                string filepath = getFilePath(); ;
-                if (filepath != string.Empty)
-                {
-                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
-                    MD5Check.GetMD5HashCode(filepath);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        public static void ParameterReport()
-        {
-            try
-            {
-                ReportDocument myReport = new ReportDocument();
-                string reportPath = (Application.StartupPath + @"\Reports\ParameterReport.rpt");
-                myReport.Load(reportPath);
-                string filepath = getFilePath(); ;
-                if (filepath != string.Empty)
-                {
-                    myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
-                    MD5Check.GetMD5HashCode(filepath);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+
+
 
     }
 }
