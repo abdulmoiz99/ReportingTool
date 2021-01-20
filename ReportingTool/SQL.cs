@@ -9,8 +9,11 @@ namespace ReportingTool
     class SQL
     {
 
-        private static SqlConnection con = new SqlConnection(@"Data Source=.\ABDUL;Initial Catalog=ReportingToolDummyDatabase;Integrated Security=True;Pooling=False");// ReadCS().ToString()); 
-                                                                                                                                                                       // private static SqlConnection con = new SqlConnection(@"Data Source=AVF-108_ADMIN\SQLEXPRESS;Initial Catalog=ReportingTool;Integrated Security=True;Pooling=False");// ReadCS().ToString()); 
+        //private static SqlConnection con = new SqlConnection(@"Data Source=.\ABDUL;Initial Catalog=ReportingToolDummyDatabase;Integrated Security=True;Pooling=False");// ReadCS().ToString()); 
+        private static SqlConnection con = new SqlConnection(@"Server=.\ABDUL;Database=ReportingToolDummyDatabase;User Id = sa; Password=123;");
+
+       
+                                                                                                                                                           // private static SqlConnection con = new SqlConnection(@"Data Source=AVF-108_ADMIN\SQLEXPRESS;Initial Catalog=ReportingTool;Integrated Security=True;Pooling=False");// ReadCS().ToString()); 
 
         public static bool IsServerConnected(string connectionString)
         {

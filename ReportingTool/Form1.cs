@@ -34,7 +34,7 @@ namespace ReportingTool
         //Batch Report Still Need Some Major Fixes
         private void bnt_BatchReport_Click(object sender, EventArgs e)
         {
-            GenerateReports.BatchReport();
+            //GenerateReports.BatchReport();
         }
         private void btn_OperationReport_Click(object sender, EventArgs e)
         {

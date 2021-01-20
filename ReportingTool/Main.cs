@@ -337,7 +337,7 @@ namespace ReportingTool
             {
                 MessageBox.Show(ex.Message, "Data Grid View");
             }
-            catch (SqlException ex)
+            catch ( SqlException ex)
             {
                 MessageBox.Show(ex.Message, "Data Grid View");
             }

@@ -55,7 +55,7 @@ namespace ReportingTool
                         AlarmReport(ID);
                         break;
                     case "3":
-                        BatchReport();
+                        BatchReport(ID);
                         break;
                     case "4":
                         OperationReport(ID);
@@ -72,7 +72,7 @@ namespace ReportingTool
         private static void InvalidReport(int ID)
         {
             SQL.NonScalarQuery("update Hand_Shake set Generation_Code = 1 , Feedback_Code = 2 where SN  = " + ID + "");
-
+            Console.WriteLine(DateTime.Now + " - Invalid Report ID");
         }
         public static void LoginReport(int ID)
         {
@@ -107,11 +107,14 @@ namespace ReportingTool
                     myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
                     UpdateMD5Code(ID, MD5Check.GetMD5HashCode(filepath));
                 }
+                Console.WriteLine(DateTime.Now + " - Login Report Generated");
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now + " -Unable To Generate Login Report");
+
             }
         }
         public static void AlarmReport(int ID)
@@ -155,11 +158,14 @@ namespace ReportingTool
                     myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
                     UpdateMD5Code(ID, MD5Check.GetMD5HashCode(filepath));
                 }
+                Console.WriteLine(DateTime.Now + " - Alarm Report Generated");
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now + " -Unable To Generate Alarm Report");
+
             }
         }
         public static void OperationReport(int ID)
@@ -203,11 +209,14 @@ namespace ReportingTool
                     myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
                     UpdateMD5Code(ID, MD5Check.GetMD5HashCode(filepath));
                 }
+                Console.WriteLine(DateTime.Now + " - Operation Report Generated");
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now + " -Unable To Generate Operation Report");
+
             }
         }
         public static void ParameterReport(int ID)
@@ -237,7 +246,6 @@ namespace ReportingTool
                 myReport.SetParameterValue("RecipeStart", GetRecipeStart(ID));
                 myReport.SetParameterValue("RecipeEnd", GetRecipeEnd(ID));
 
-
                 string fileName = GetFileName("ParameterReport");// @"\Login_" + DateTime.Now.ToFileTime() + ".pdf";
                 string filepath = SaveReportPath + fileName;// @"\LoginReport.pdf";
                 if (filepath != string.Empty)
@@ -245,16 +253,18 @@ namespace ReportingTool
                     myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
                     UpdateMD5Code(ID, MD5Check.GetMD5HashCode(filepath));
                 }
-
+                Console.WriteLine(DateTime.Now + " - Parameter Report Generated");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now + " -Unable To Generate Parameter Report");
+
             }
         }
         public static string GetParamterQuery(int ID)
         {
-            string recepieStart =  SQL.ScalarQuery("select IsNull(Recipe_No_Start,0) from Hand_Shake where SN  = " + ID + "");
+            string recepieStart = SQL.ScalarQuery("select IsNull(Recipe_No_Start,0) from Hand_Shake where SN  = " + ID + "");
             string recepieEnd = SQL.ScalarQuery("select IsNull(Recipe_No_End,0) from Hand_Shake where SN  = " + ID + "");
             if (recepieStart != "0" && recepieEnd == "0")
             {
@@ -333,26 +343,137 @@ namespace ReportingTool
         {
             return SQL.ScalarQuery("select ISNull(search_condition,1) from Hand_Shake where SN = " + ID + "");
         }
-        public static void BatchReport()
+        public static void BatchReport(int ID)
         {
+            SQL.NonScalarQuery("update Hand_Shake set Generation_Code = 1 , Feedback_Code = 1 where sn  = " + ID + "");
+
             try
             {
+                string BatchNo = Batch.GetBatchNo(ID);
+                string SqlQuery = "select * from Production_View where Batch_No = (select batch_No from Hand_Shake where SN = " + ID + ")";
+
+                if (SQL.Con.State != ConnectionState.Open) SQL.Con.Open();
                 ReportDocument myReport = new ReportDocument();
-                string reportPath = (Application.StartupPath + @"\Reports\BatchReport.rpt");
+                string reportPath = (Application.StartupPath + @"\Reports\New Folder\BatchReport.rpt");
                 myReport.Load(reportPath);
-                string filepath = getFilePath(); ;
+                var ds = new DataSet();
+
+
+                SqlQuery = "select * from ProductionReport_View where Batch_No = (select batch_No from Hand_Shake where SN = " + ID + ")";
+                var adapter = new SqlDataAdapter(SqlQuery, SQL.Con);
+                adapter.Fill(ds, "ProductionReport_View");
+                myReport.SetDataSource(ds);
+
+
+
+
+
+                //FOR ALARM REPORT
+                SqlQuery = "select * from Alarm where Batch_No = (select batch_No from Hand_Shake where SN = " + ID + ")";
+                var Alarmds = new DataSet();
+                var AlarmAdapter = new SqlDataAdapter(SqlQuery, SQL.Con);
+                AlarmAdapter.Fill(Alarmds, "Alarm");
+                myReport.Subreports[0].SetDataSource(Alarmds);
+
+
+                //FOR OPERATION REPORT
+                SqlQuery = "select * from Operation where Batch_No = (select batch_No from Hand_Shake where SN = " + ID + ")";
+                var Operationds = new DataSet();
+                var OperationAdapter = new SqlDataAdapter(SqlQuery, SQL.Con);
+                OperationAdapter.Fill(Operationds, "Operation");
+                myReport.Subreports[1].SetDataSource(Operationds);
+
+                //FOR PARAMETER REPORT
+                SqlQuery = Batch.GetParameterQuery(BatchNo);// "select * from Parameter";// where Recepie_No BETWEEN (select MIN(Recipe_No) from Production_View) AND  (select MAX(Recipe_No) from Production_View)";
+                var Parameterds = new DataSet();
+                var ParameterAdapter = new SqlDataAdapter(SqlQuery, SQL.Con);
+                ParameterAdapter.Fill(Parameterds, "Parameter");
+                myReport.Subreports[2].SetDataSource(Parameterds);
+
+
+                //FOR PRODUCT REPORT
+                SqlQuery = "select * from ProductionReport_View where Batch_No = (select batch_No from Hand_Shake where SN = " + ID + ")";
+                var Productionadapter = new SqlDataAdapter(SqlQuery, SQL.Con);
+                Productionadapter.Fill(ds, "ProductionReport_View");
+                myReport.Subreports[3].SetDataSource(ds);
+
+                //PARAMETER FOR MAIN REPORT
+                myReport.SetParameterValue("Title", GetTittle(ID));
+                myReport.SetParameterValue("Username", GetUsername(ID));
+                myReport.SetParameterValue("ReportSN", GetReportSN(ID, "Batch"));
+                myReport.SetParameterValue("RecipeNo", Batch.GetRecipeNo());
+                myReport.SetParameterValue("ProductName", Batch.GetProductName());
+                myReport.SetParameterValue("BatchNo", BatchNo);
+                myReport.SetParameterValue("StartTime", GetStartTime(ID));
+                myReport.SetParameterValue("EndTime", GetEndTime(ID));
+
+
+
+
+                myReport.SetParameterValue("TotalRecord", Batch.GetTotalRecord(BatchNo));
+                myReport.SetParameterValue("GoodCount", Batch.GetGoodCount(BatchNo));
+                myReport.SetParameterValue("DefectCount", Batch.GetDefectCount(BatchNo));
+
+                myReport.SetParameterValue("NoBottleCount", Batch.GetNoBottleSum(BatchNo));
+                myReport.SetParameterValue("WrongBottleCount", Batch.GetWrongBottleSum(BatchNo));
+                myReport.SetParameterValue("NoFillCount", Batch.GetNoFillSum(BatchNo));
+                myReport.SetParameterValue("OverWeightCount", Batch.GetOverWeightSum(BatchNo));
+                myReport.SetParameterValue("UnderWeightCount", Batch.GetUnderWeightSum(BatchNo));
+                myReport.SetParameterValue("NoPlugCount", Batch.GetNoPlugSum(BatchNo));
+                myReport.SetParameterValue("NoCapCount", Batch.GetNoCapSum(BatchNo));
+                myReport.SetParameterValue("NoSealCount", Batch.GetNoSealSum(BatchNo));
+
+                // MAX AVG MIN SD PARAMETERS
+                myReport.SetParameterValue("NetWeightMax", Batch.GetNetWeightMax(BatchNo) + " g");
+                myReport.SetParameterValue("NetWeightAverage", Batch.GetNetWeightAverage(BatchNo) + " g");
+                myReport.SetParameterValue("NetWeightMin", Batch.GetNetWeightMin(BatchNo) + " g");
+                myReport.SetParameterValue("NetWeightSD", Batch.GetNetWeightSD(BatchNo) + " g");
+
+                myReport.SetParameterValue("GrossWeightMax", Batch.GetGrossWeightMax(BatchNo) + " g");
+                myReport.SetParameterValue("GrossWeightMin", Batch.GetGrossWeightMin(BatchNo) + " g");
+                myReport.SetParameterValue("GrossWeightAverage", Batch.GetGrossWeightAverage(BatchNo) + " g");
+                myReport.SetParameterValue("GrossWeightSD", Batch.GetGrossWeightSD(BatchNo) + " g");
+
+                myReport.SetParameterValue("FillingWeightMax", Batch.GetFillingWeightMax(BatchNo) + " g");
+                myReport.SetParameterValue("FillingWeightAveage", Batch.GetFillingWeightAverage(BatchNo) + " g");
+                myReport.SetParameterValue("FillingWeightMin", Batch.GetFillingWeightMin(BatchNo) + " g");
+                myReport.SetParameterValue("FillingWeightSD", Batch.GetFillingWeightSD(BatchNo) + " g");
+
+                myReport.SetParameterValue("FillingTimeMax", Batch.GetFillingTimeMax(BatchNo));
+                myReport.SetParameterValue("FillingTimeAverage", Batch.GetFillingTimeMin(BatchNo));
+                myReport.SetParameterValue("FillingTimeMin", Batch.GetFillingTimeMin(BatchNo));
+                myReport.SetParameterValue("FillingTimeSD", Batch.GetFillingTimeSD(BatchNo));
+
+                myReport.SetParameterValue("OperatorName", GetOperator(ID));
+                myReport.SetParameterValue("SupervisorName", GetSupervisor(ID));
+
+
+
+                //FOR SUB REPORT (Product Report)
+                myReport.SetParameterValue("NetHi", Batch.GetNetHi(BatchNo));
+                myReport.SetParameterValue("NetTarget", Batch.GetNetTarget(BatchNo));
+                myReport.SetParameterValue("NetLo", Batch.GetNetLo(BatchNo));
+
+                myReport.SetParameterValue("FillingHi", Batch.GetFillingHi(BatchNo));
+                myReport.SetParameterValue("FillingTarget", Batch.GetFillingTarget(BatchNo));
+                myReport.SetParameterValue("FillingLo", Batch.GetFillingLo(BatchNo));
+
+
+                string fileName = GetFileName("BatchReport");
+                string filepath = SaveReportPath + fileName;
                 if (filepath != string.Empty)
                 {
                     myReport.ExportToDisk(ExportFormatType.PortableDocFormat, filepath);
-                    MD5Check.GetMD5HashCode(filepath);
+                    UpdateMD5Code(ID, MD5Check.GetMD5HashCode(filepath));
                 }
+                Console.WriteLine(DateTime.Now + " - Batch Report Generated");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(DateTime.Now + " -Unable To Generate Batch Report");
             }
         }
-
 
 
     }

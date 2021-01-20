@@ -34,5 +34,17 @@ namespace ReportingTool
             CheckReport();
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GenerateReports.BatchReport(4);
+            listBox1.Refresh();
+            listBox1.Items.Add("Report Generated");
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
